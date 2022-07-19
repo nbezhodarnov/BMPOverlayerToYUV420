@@ -19,7 +19,7 @@ BMPPicture::BMPPicture(const std::string &filename)
     readData(file);
 }
 
-BMPFrame BMPPicture::getFrame() const
+RGBFrame BMPPicture::getFrame() const
 {
     return {info.biWidth, info.biHeight, data};
 }
