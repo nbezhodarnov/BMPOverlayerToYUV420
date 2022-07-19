@@ -5,4 +5,4 @@ project(BMPInserterToYUV420 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(BMPInserterToYUV420 main.cpp bmppicture.h bmppicture.cpp)
+add_executable(BMPInserterToYUV420 main.cpp bmppicture.h bmppicture.cpp YUV/yuvframe.h YUV/i420yuvframe.h YUV/i420yuvframe.cpp YUV/yuvframefactory.h YUV/i420yuvframefactory.h YUV/i420yuvframefactory.cpp)
