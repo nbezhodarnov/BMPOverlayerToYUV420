@@ -19,6 +19,11 @@ BMPPicture::BMPPicture(const std::string &filename)
     readData(file);
 }
 
+BMPFrame BMPPicture::getFrame() const
+{
+    return {info.biWidth, info.biHeight, data};
+}
+
 uint32_t BMPPicture::getFileSize(std::ifstream &file)
 {
     uint32_t currentPoint = file.tellg();

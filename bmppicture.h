@@ -33,10 +33,17 @@ struct RGBPixel {
     uint8_t red;
 };
 
+struct BMPFrame {
+    int width, height;
+    std::vector<RGBPixel> data;
+};
+
 class BMPPicture
 {
 public:
     BMPPicture(const std::string &filename);
+
+    BMPFrame getFrame() const;
 
 private:
     BitMapFileHeader header;
