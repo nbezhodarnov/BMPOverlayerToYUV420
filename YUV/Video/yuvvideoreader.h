@@ -18,6 +18,8 @@ public:
 
 private:
     int32_t width, height;
+    uint32_t bytesRead;
+    uint32_t fileSize;
     std::ifstream file;
     std::unique_ptr<YUVFrameFactory> frameFactory;
 };

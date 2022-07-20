@@ -11,18 +11,20 @@ YUVVideoReader::YUVVideoReader(const std::string &filename, std::unique_ptr<YUVF
     width = sourceWidth;
     height = sourceHeight;
 
-    uint32_t fileSize = getFileSize(file);
+    fileSize = getFileSize(file);
     double framesCount = static_cast<double>(fileSize) / static_cast<double>(width * height);
     if (framesCount - static_cast<uint32_t>(framesCount) > 0.001) {
         throw std::runtime_error("YUVVideoReader: Wrong resolution!");
     }
+
+    bytesRead = 0;
 
     frameFactory = std::move(newFrameFactory);
 }
 
 bool YUVVideoReader::eof() const
 {
-    return file.eof();
+    return file.eof() || bytesRead == fileSize;
 }
 
 std::unique_ptr<YUVFrame> YUVVideoReader::getFrame()
@@ -37,6 +39,7 @@ std::unique_ptr<YUVFrame> YUVVideoReader::getFrame()
     if (!file.read(reinterpret_cast<char*>(&frameData[0]), frameSize)) {
         throw std::runtime_error("YUVVideoReader: Error while reading data!");
     }
+    bytesRead += frameSize;
 
     return frameFactory->createFrame(frameData, width, height);
 }
