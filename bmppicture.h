@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "rgbframe.h"
+
 struct BitMapFileHeader {
     uint16_t bfType;
     uint32_t bfSize;
@@ -25,17 +27,6 @@ struct BitMapInfo {
     int32_t biYPelsPerMeter;
     uint32_t biClrUsed;
     uint32_t biClrImportant;
-};
-
-struct RGBPixel {
-    uint8_t blue;
-    uint8_t green;
-    uint8_t red;
-};
-
-struct RGBFrame {
-    int width, height;
-    std::vector<RGBPixel> data;
 };
 
 class BMPPicture
