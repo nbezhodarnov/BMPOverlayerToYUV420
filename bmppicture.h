@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "filefunctions.h"
 #include "rgbframe.h"
 
 struct BitMapFileHeader {
@@ -41,7 +42,6 @@ private:
     BitMapInfo info;
     std::vector<RGBPixel> data;
 
-    uint32_t getFileSize(std::ifstream &file);
     void readHeader(std::ifstream &file);
     void readInfo(std::ifstream &file);
     void readData(std::ifstream &file);
