@@ -77,12 +77,23 @@ void I420YUVFrame::overlayFrame(const std::unique_ptr<YUVFrame> &otherFrame, con
     std::vector<int8_t> otherU = otherFrame->getU();
     std::vector<int8_t> otherV = otherFrame->getV();
     for (int i = downOffset; i < downOffset + otherFrame->getHeight(); i++) {
+        int8_t linePadding = 0;
+        if (i == height - 1 && height % 2) {
+            linePadding = 1;
+        }
+
         for (int j = leftOffset; j < leftOffset + otherFrame->getWidth(); j++) {
             int otherI = i - downOffset;
             int otherJ = j - leftOffset;
+
+            int8_t linePaddingOther = 0;
+            if (otherI == otherFrame->getHeight() - 1 && otherFrame->getHeight() % 2) {
+                linePaddingOther = 1;
+            }
+
             Y[i * width + j] = otherY[otherI * otherFrame->getWidth() + otherJ];
-            U[(i >> 1) * width + j] = otherU[(otherI >> 1) * width + otherJ];
-            V[(i >> 1) * width + j] = otherV[(otherI >> 1) * width + otherJ];
+            U[(((i - linePadding) * width) >> 2) + (j >> 1)] = otherU[(((otherI - linePaddingOther) * otherFrame->getWidth()) >> 2) + (otherJ >> 1)];
+            V[(((i - linePadding) * width) >> 2) + (j >> 1)] = otherV[(((otherI - linePaddingOther) * otherFrame->getWidth()) >> 2) + (otherJ >> 1)];
         }
     }
 }

@@ -1,26 +1,36 @@
 #include "rgbtoi420yuvconverter.h"
 
+#include <stdexcept>
+#include <cmath>
+
 I420YUVFrame RGBToI420YUVConverter::convert(const RGBFrame &frame) const
 {
-    int size = frame.width * frame.height;
+    int frameSize = frame.width * frame.height;
+    int UComponentSize = frameSize / 4;
 
-    std::vector<int8_t> yuv(size * 3 / 2);
+    std::vector<int8_t> yuv(frameSize * 3 / 2);
     int y, u, v;
     for (int i = 0; i < frame.height; i++) {
+        int8_t linePadding = 0;
+        if (i == frame.height - 1 && frame.height % 2) {
+            linePadding = 1;
+        }
+
         for (int j = 0; j < frame.width; j++) {
-            RGBPixel pixel = frame.data[i * frame.width + j];
+            int pixelIndex = i * frame.width + j;
+            if (frame.height < 0) {
+                pixelIndex  = frameSize - pixelIndex;
+            }
 
-            y = ((66 * pixel.red + 129 * pixel.green + 25 * pixel.blue + 128) >> 8) + 16;
-            u = ((-38 * pixel.red - 74 * pixel.green + 112 * pixel.blue + 128) >> 8) + 128;
-            v = ((112 * pixel.red - 94 * pixel.green - 18 * pixel.blue + 128) >> 8) + 128;
+            RGBPixel pixel = frame.data[pixelIndex];
 
-            uint8_t yByte = y < 16 ? 16 : (y > 255 ? 255 : y);
-            uint8_t uByte = u < 0 ? 0 : (u > 255 ? 255 : u);
-            uint8_t vByte = v < 0 ? 0 : (v > 255 ? 255 : v);
+            y = 0.257 * pixel.red + 0.504 * pixel.green + 0.098 * pixel.blue + 16.0;
+            u = -0.148 * pixel.red - 0.291 * pixel.green + 0.439 * pixel.blue + 128.0;
+            v = 0.439 * pixel.red - 0.368 * pixel.green - 0.071 * pixel.blue + 128.0;
 
-            yuv[i * frame.width + j] = static_cast<int8_t>(yByte);
-            yuv[size + (i >> 1) * frame.width + j] = static_cast<int8_t>(uByte);
-            yuv[size * 5 / 4 + (i >> 1) * frame.width + j] = static_cast<int8_t>(vByte);
+            yuv[i * frame.width + j] = static_cast<int8_t>(y);
+            yuv[frameSize + (((i - linePadding) * frame.width) >> 2) + (j >> 1)] = static_cast<int8_t>(u);
+            yuv[frameSize + UComponentSize + (((i - linePadding) * frame.width) >> 2) + (j >> 1)] = static_cast<int8_t>(v);
         }
     }
     return I420YUVFrame(yuv, frame.width, frame.height);
