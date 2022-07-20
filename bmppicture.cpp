@@ -99,7 +99,11 @@ void BMPPicture::readData(std::ifstream &file)
     int i = 0;
     for (; !file.eof() && i < std::abs(info.biHeight); i++) {
         std::vector<RGBPixel> line(pixelsToRead);
-        file.read(reinterpret_cast<char*>(&line[0]), bytesPerLine);
+
+        if(!file.read(reinterpret_cast<char*>(&line[0]), bytesPerLine)) {
+            throw std::runtime_error("BMPPicture: Error while reating data!");
+        }
+
         data.insert(data.begin(), line.begin(), line.end() - pixelsToSkip);
     }
 
