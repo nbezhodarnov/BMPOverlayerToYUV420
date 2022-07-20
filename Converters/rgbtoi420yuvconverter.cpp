@@ -18,9 +18,6 @@ I420YUVFrame RGBToI420YUVConverter::convert(const RGBFrame &frame) const
 
         for (int j = 0; j < frame.width; j++) {
             int pixelIndex = i * frame.width + j;
-            if (frame.height < 0) {
-                pixelIndex  = frameSize - pixelIndex;
-            }
 
             RGBPixel pixel = frame.data[pixelIndex];
 

@@ -1,5 +1,7 @@
 #include "bmppicture.h"
 
+#include <algorithm>
+
 const int headerAndInfoSize = 54;
 const int infoSize = 40;
 const int BM = 0x4D42;
@@ -21,7 +23,14 @@ BMPPicture::BMPPicture(const std::string &filename)
 
 RGBFrame BMPPicture::getFrame() const
 {
-    return {info.biWidth, info.biHeight, data};
+    std::vector<RGBPixel> dataCopy = data;
+    int width = info.biWidth;
+    int height = info.biHeight;
+    if (height < 0) {
+        std::reverse(dataCopy.begin(), dataCopy.end());
+        height = -height;
+    }
+    return {width, height, dataCopy};
 }
 
 void BMPPicture::readHeader(std::ifstream &file)
