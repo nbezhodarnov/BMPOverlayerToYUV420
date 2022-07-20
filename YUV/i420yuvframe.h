@@ -10,13 +10,13 @@
 class I420YUVFrame : public YUVFrame
 {
 public:
-    I420YUVFrame(const std::vector<uint8_t> data, const int &source_width, const int &source_height);
+    I420YUVFrame(const std::vector<int8_t> data, const int &source_width, const int &source_height);
 
 private:
     int width, height;
-    std::vector<uint8_t> Y;
-    std::vector<uint8_t> U;
-    std::vector<uint8_t> V;
+    std::vector<int8_t> Y;
+    std::vector<int8_t> U;
+    std::vector<int8_t> V;
 };
 
 #endif // I420YUVFRAME_H

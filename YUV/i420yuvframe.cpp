@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-I420YUVFrame::I420YUVFrame(const std::vector<uint8_t> data, const int &source_width, const int &source_height)
+I420YUVFrame::I420YUVFrame(const std::vector<int8_t> data, const int &source_width, const int &source_height)
 {
     if (data.size() != source_width * source_height) {
         throw std::runtime_error("I420YUVFrame: Wrong data size!");
@@ -11,10 +11,12 @@ I420YUVFrame::I420YUVFrame(const std::vector<uint8_t> data, const int &source_wi
     width = source_width;
     height = source_height;
 
+    int size = width * height;
+
     auto yBegin = data.begin();
-    auto yEnd = yBegin + width * height;
+    auto yEnd = yBegin + size;
     auto uBegin = yEnd;
-    auto uEnd = uBegin + width * height / 4;
+    auto uEnd = uBegin + size / 4;
     auto vBegin = uEnd;
     auto vEnd = data.end();
 
