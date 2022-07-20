@@ -24,9 +24,9 @@ I420YUVFrame RGBToI420YUVConverter::convert(const RGBFrame &frame) const
 
             RGBPixel pixel = frame.data[pixelIndex];
 
-            y = 0.257 * pixel.red + 0.504 * pixel.green + 0.098 * pixel.blue + 16.0;
-            u = -0.148 * pixel.red - 0.291 * pixel.green + 0.439 * pixel.blue + 128.0;
-            v = 0.439 * pixel.red - 0.368 * pixel.green - 0.071 * pixel.blue + 128.0;
+            y = 0.257 * static_cast<uint8_t>(pixel.red) + 0.504 * static_cast<uint8_t>(pixel.green) + 0.098 * static_cast<uint8_t>(pixel.blue) + 16.0;
+            u = -0.148 * static_cast<uint8_t>(pixel.red) - 0.291 * static_cast<uint8_t>(pixel.green) + 0.439 * static_cast<uint8_t>(pixel.blue) + 128.0;
+            v = 0.439 * static_cast<uint8_t>(pixel.red) - 0.368 * static_cast<uint8_t>(pixel.green) - 0.071 * static_cast<uint8_t>(pixel.blue) + 128.0;
 
             yuv[i * frame.width + j] = static_cast<int8_t>(y);
             yuv[frameSize + (((i - linePadding) * frame.width) >> 2) + (j >> 1)] = static_cast<int8_t>(u);
