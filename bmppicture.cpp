@@ -2,8 +2,9 @@
 
 #include <algorithm>
 
-const int headerAndInfoSize = 54;
-const int infoSize = 40;
+const int headerAndInfoSize = 26;
+const int BitMapCoreHeaderSize = 12;
+const int BitMapInfoHeaderSize = 40;
 const int BM = 0x4D42;
 const int BI_RGB = 0;
 const int RGBPixelSize = 24;
@@ -62,8 +63,8 @@ void BMPPicture::readInfo(std::ifstream &file)
 {
     file.read(reinterpret_cast<char*>(&info.biSize), sizeof(info.biSize));
 
-    if (info.biSize != infoSize) {
-        throw std::runtime_error("BMPPicture: Not supported BITMAPCOREHEADER, BITMAPV4HEADER and BITMAPV5HEADER!");
+    if (info.biSize != BitMapCoreHeaderSize && info.biSize != BitMapInfoHeaderSize) {
+        throw std::runtime_error("BMPPicture: Not supported BITMAPV4HEADER and BITMAPV5HEADER!");
     }
 
     file.read(reinterpret_cast<char*>(&info.biWidth), sizeof(info.biWidth));
@@ -73,6 +74,10 @@ void BMPPicture::readInfo(std::ifstream &file)
 
     if (info.biBitCount != RGBPixelSize) {
         throw std::runtime_error("BMPPicture: Not supported info.biBitCount other than 24!");
+    }
+
+    if (info.biSize == BitMapCoreHeaderSize) {
+        return;
     }
 
     file.read(reinterpret_cast<char*>(&info.biCompression), sizeof(info.biCompression));
