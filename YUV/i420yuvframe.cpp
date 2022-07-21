@@ -91,9 +91,14 @@ void I420YUVFrame::overlayFrame(const std::unique_ptr<YUVFrame> &otherFrame, con
                 linePaddingOther = 1;
             }
 
+            int UVComponentI = ((i - linePadding) >> 1) * (width >> 1);
+            int UVComponentJ = j >> 1;
+            int otherUVComponentI = ((otherI - linePaddingOther) >> 1) * (otherFrame->getWidth() >> 1);
+            int otherUVComponentJ = otherJ >> 1;
+
             Y[i * width + j] = otherY[otherI * otherFrame->getWidth() + otherJ];
-            U[(((i - linePadding) * width) >> 2) + (j >> 1)] = otherU[(((otherI - linePaddingOther) * otherFrame->getWidth()) >> 2) + (otherJ >> 1)];
-            V[(((i - linePadding) * width) >> 2) + (j >> 1)] = otherV[(((otherI - linePaddingOther) * otherFrame->getWidth()) >> 2) + (otherJ >> 1)];
+            U[UVComponentI + UVComponentJ] = otherU[otherUVComponentI + otherUVComponentJ];
+            V[UVComponentI + UVComponentJ] = otherV[otherUVComponentI + otherUVComponentJ];
         }
     }
 }
