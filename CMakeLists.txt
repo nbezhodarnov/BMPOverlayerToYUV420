@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.23)
 
 project(BMPInserterToYUV420 LANGUAGES CXX)
 
+if (MSVC)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
