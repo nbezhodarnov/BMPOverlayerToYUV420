@@ -91,6 +91,7 @@ void I420YUVFrame::overlayFrame(const std::unique_ptr<YUVFrame> &otherFrame, con
                 extraLineOther = true;
             }
 
+            // Right shift is used for dividing by 2
             int UVComponentI = (i >> 1) * (width >> 1);
             int UVComponentJ = j >> 1;
             int otherUVComponentI = (otherI >> 1) * (otherFrame->getWidth() >> 1);
