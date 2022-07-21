@@ -77,28 +77,30 @@ void I420YUVFrame::overlayFrame(const std::unique_ptr<YUVFrame> &otherFrame, con
     std::vector<int8_t> otherU = otherFrame->getU();
     std::vector<int8_t> otherV = otherFrame->getV();
     for (int i = downOffset; i < downOffset + otherFrame->getHeight(); i++) {
-        int8_t linePadding = 0;
+        bool extraLine = false;
         if (i == height - 1 && height % 2) {
-            linePadding = 1;
+            extraLine = true;
         }
 
         for (int j = leftOffset; j < leftOffset + otherFrame->getWidth(); j++) {
             int otherI = i - downOffset;
             int otherJ = j - leftOffset;
 
-            int8_t linePaddingOther = 0;
+            bool extraLineOther = false;
             if (otherI == otherFrame->getHeight() - 1 && otherFrame->getHeight() % 2) {
-                linePaddingOther = 1;
+                extraLineOther = true;
             }
 
-            int UVComponentI = ((i - linePadding) >> 1) * (width >> 1);
+            int UVComponentI = (i >> 1) * (width >> 1);
             int UVComponentJ = j >> 1;
-            int otherUVComponentI = ((otherI - linePaddingOther) >> 1) * (otherFrame->getWidth() >> 1);
+            int otherUVComponentI = (otherI >> 1) * (otherFrame->getWidth() >> 1);
             int otherUVComponentJ = otherJ >> 1;
 
             Y[i * width + j] = otherY[otherI * otherFrame->getWidth() + otherJ];
-            U[UVComponentI + UVComponentJ] = otherU[otherUVComponentI + otherUVComponentJ];
-            V[UVComponentI + UVComponentJ] = otherV[otherUVComponentI + otherUVComponentJ];
+            if (!extraLine && !extraLineOther) {
+                U[UVComponentI + UVComponentJ] = otherU[otherUVComponentI + otherUVComponentJ];
+                V[UVComponentI + UVComponentJ] = otherV[otherUVComponentI + otherUVComponentJ];
+            }
         }
     }
 }

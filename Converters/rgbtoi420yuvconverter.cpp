@@ -11,9 +11,9 @@ I420YUVFrame RGBToI420YUVConverter::convert(const RGBFrame &frame) const
     std::vector<int8_t> yuv(frameSize * 3 / 2);
     int y, u, v;
     for (int i = 0; i < frame.height; i++) {
-        int8_t linePadding = 0;
+        bool extraLine = false;
         if (i == frame.height - 1 && frame.height % 2) {
-            linePadding = 1;
+            extraLine = true;
         }
 
         for (int j = 0; j < frame.width; j++) {
@@ -25,12 +25,14 @@ I420YUVFrame RGBToI420YUVConverter::convert(const RGBFrame &frame) const
             u = -0.148 * static_cast<uint8_t>(pixel.red) - 0.291 * static_cast<uint8_t>(pixel.green) + 0.439 * static_cast<uint8_t>(pixel.blue) + 128.0;
             v = 0.439 * static_cast<uint8_t>(pixel.red) - 0.368 * static_cast<uint8_t>(pixel.green) - 0.071 * static_cast<uint8_t>(pixel.blue) + 128.0;
 
-            int UVComponentI = ((i - linePadding) >> 1) * (frame.width >> 1);
+            int UVComponentI = (i >> 1) * (frame.width >> 1);
             int UVComponentJ = j >> 1;
 
             yuv[i * frame.width + j] = static_cast<int8_t>(y);
-            yuv[frameSize + UVComponentI + UVComponentJ] = static_cast<int8_t>(u);
-            yuv[frameSize + UVComponentSize + UVComponentI + UVComponentJ] = static_cast<int8_t>(v);
+            if (!extraLine) {
+                yuv[frameSize + UVComponentI + UVComponentJ] = static_cast<int8_t>(u);
+                yuv[frameSize + UVComponentSize + UVComponentI + UVComponentJ] = static_cast<int8_t>(v);
+            }
         }
     }
     return I420YUVFrame(yuv, frame.width, frame.height);
