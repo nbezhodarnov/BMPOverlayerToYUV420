@@ -5,20 +5,30 @@
 #include "YUV/Video/yuvvideowriter.h"
 #include "YUV/i420yuvframefactory.h"
 #include "bmppicture.h"
+#include "cliparser.h"
 
-int main()
+int main(int argc, char** argv)
 {
-    BMPPicture bmp("a64af8df595accac8c2f8bc2f407f7e3.bmp");
+    CLIParser parser(argc, argv);
+    std::string inputVideoFilename = parser.getInputVideoFilename();
+    int inputVideoWidth = parser.getInputVideoWidth();
+    int inputVideoHeight = parser.getInputVideoHeight();
+    std::string inputBMPPictureFilename = parser.getInputBMPPictureFilename();
+    std::string outputVideoFilename = parser.getOutputVideoFilename();
+    int leftOffset = parser.getLeftOffset();
+    int downOffset = parser.getDownOffset();
+
+    BMPPicture bmp(inputBMPPictureFilename);
 
     RGBToI420YUVConverter converter;
     std::unique_ptr<YUVFrame> convertedBMP(new I420YUVFrame(converter.convert(bmp.getFrame())));
 
-    YUVVideoReader reader("park_joy_1080p50.yuv", std::unique_ptr<YUVFrameFactory>(new I420YUVFrameFactory()), 1920, 1080);
-    YUVVideoWriter writer("park_joy_1080p50_overlayed.yuv");
+    YUVVideoReader reader(inputVideoFilename, std::unique_ptr<YUVFrameFactory>(new I420YUVFrameFactory()), inputVideoWidth, inputVideoHeight);
+    YUVVideoWriter writer(outputVideoFilename);
 
     while (!reader.eof()) {
         std::unique_ptr<YUVFrame> frame = reader.getFrame();
-        frame->overlayFrame(convertedBMP, 0, 0);
+        frame->overlayFrame(convertedBMP, leftOffset, downOffset);
         writer.writeFrame(frame);
     }
 
