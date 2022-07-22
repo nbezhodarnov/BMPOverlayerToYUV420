@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(BMPInserterToYUV420 LANGUAGES CXX)
+project(BMPOverlayerToYUV420 LANGUAGES CXX)
 
 if (MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -28,7 +28,7 @@ add_subdirectory("YUV")
 
 add_subdirectory("Converters")
 
-add_executable(BMPInserterToYUV420 cliparser.h cliparser.cpp main.cpp)
-target_link_libraries(BMPInserterToYUV420 PRIVATE bmp yuv converters)
+add_executable(BMPOverlayerToYUV420 cliparser.h cliparser.cpp main.cpp)
+target_link_libraries(BMPOverlayerToYUV420 PRIVATE bmp yuv converters)
 
 install(TARGETS bmp filefunctions yuv converters FILE_SET HEADERS)
